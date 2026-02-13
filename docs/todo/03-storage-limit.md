@@ -37,8 +37,8 @@ export class LibraryService {
       if (currentCount >= libraryLimit) {
         const plan = await this.subscriptionService.getCurrentPlan(userId);
         throw new BadRequestException(
-          `${plan.name} 플랜은 최대 ${libraryLimit}개의 Library만 생성할 수 있습니다. ` +
-          `플랜을 업그레이드하려면 구독 페이지를 방문하세요.`
+          `${plan.name} plan allows maximum ${libraryLimit} library(ies). ` +
+          `Please upgrade your plan to create more libraries.`
         );
       }
     }
@@ -107,11 +107,11 @@ export class LibraryPrivateService {
       const plan = await this.subscriptionService.getCurrentPlan(userId);
 
       throw new BadRequestException(
-        `저장 용량이 부족합니다.\n` +
-        `현재 플랜: ${plan.name}\n` +
-        `사용 가능 공간: ${this.subscriptionService.formatBytes(availableSpace)}\n` +
-        `업로드 시도 크기: ${this.subscriptionService.formatBytes(uploadSize)}\n` +
-        `플랜을 업그레이드하려면 구독 페이지를 방문하세요.`
+        `Insufficient storage space.\n` +
+        `Current plan: ${plan.name}\n` +
+        `Available space: ${this.subscriptionService.formatBytes(availableSpace)}\n` +
+        `Upload size: ${this.subscriptionService.formatBytes(uploadSize)}\n` +
+        `Please upgrade your plan for more storage.`
       );
     }
 
@@ -158,7 +158,7 @@ export class LibraryPrivateService {
         uploadedFiles.push(file.originalname);
       } catch (error) {
         console.error(`Failed to upload file: ${file.originalname}`, error);
-        throw new BadRequestException(`파일 업로드 실패: ${file.originalname}`);
+        throw new BadRequestException(`File upload failed: ${file.originalname}`);
       }
     }
 
