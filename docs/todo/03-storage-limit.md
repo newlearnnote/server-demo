@@ -333,14 +333,19 @@ export class SubscriptionController {
 ### Guard 구현
 - [x] LibraryLimitGuard 생성 (Library 개수 제한)
 - [x] StorageLimitGuard 생성 (파일 업로드 용량 제한)
+- [x] StorageLimitGuard에 개별 파일 10MB 제한 추가
+- [x] StorageLimitGuard에 배치 총 용량 50MB 제한 추가
+- [x] StorageLimitGuard에 플랜별 총 용량 제한 추가
+- [x] Multer fileSize 제한 제거 (Guard로 통합)
 
 ### StorageService
 - [x] getFileSize 메서드 추가
 - [x] deleteFile 메서드 확인 (이미 존재)
 
 ### Controller Guard 적용
-- [ ] LibraryController에 LibraryLimitGuard 적용
-- [ ] LibraryPrivateController에 StorageLimitGuard 적용
+- [x] LibraryAppController push 엔드포인트에 StorageLimitGuard 적용
+- [x] LibraryAppController overwrite 엔드포인트에 StorageLimitGuard 적용
+- [ ] LibraryWebController에 LibraryLimitGuard 적용 (createLibrary)
 
 ### Service 로직 구현
 - [ ] LibraryPrivateService pushLibrary에서 파일 업로드 후 storageUsed 증가
