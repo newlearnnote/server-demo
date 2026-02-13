@@ -326,36 +326,51 @@ export class SubscriptionController {
 ## 체크리스트
 
 ### 아키텍처 설계
-- [x] 순환 의존성 제거 (Guard 패턴 적용)
-- [x] SubscriptionModule → LibraryModule 단방향 의존성 유지
-- [x] LibraryModule에서 SubscriptionModule import 제거
+- [x] 순환 의존성 제거 (Service 레이어 검증 패턴 적용)
+- [x] ~~SubscriptionModule → LibraryModule~~ → **LibraryModule → SubscriptionModule** (단방향)
+- [x] SubscriptionModule에서 LibraryModule import 제거
+- [x] LibraryModule에 SubscriptionModule import 추가
+- [x] SubscriptionService에서 LibraryCommonService 의존성 제거
 
-### Guard 구현
-- [x] LibraryLimitGuard 생성 (Library 개수 제한)
-- [x] StorageLimitGuard 생성 (파일 업로드 용량 제한)
-- [x] StorageLimitGuard에 개별 파일 10MB 제한 추가
-- [x] StorageLimitGuard에 배치 총 용량 50MB 제한 추가
-- [x] StorageLimitGuard에 플랜별 총 용량 제한 추가
-- [x] Multer fileSize 제한 제거 (Guard로 통합)
+### Guard 구현 → Service 레이어로 이동 ✅
+- [x] ~~LibraryLimitGuard 생성~~ → `validateLibraryLimit()` private method
+- [x] ~~StorageLimitGuard 생성~~ → `validateStorageLimit()` private method
+- [x] 개별 파일 10MB 제한 → `validateFileSizes()` private method
+- [x] 배치 총 용량 50MB 제한 → `validateBatchSize()` private method
+- [x] 플랜별 총 용량 제한 → `validateStorageLimit()` private method
+- [x] Guards 삭제 (책임 분리 원칙에 따라 Service로 이동)
 
 ### StorageService
 - [x] getFileSize 메서드 추가
 - [x] deleteFile 메서드 확인 (이미 존재)
 
-### Controller Guard 적용
-- [x] LibraryAppController push 엔드포인트에 StorageLimitGuard 적용
-- [x] LibraryAppController overwrite 엔드포인트에 StorageLimitGuard 적용
-- [ ] LibraryWebController에 LibraryLimitGuard 적용 (createLibrary)
+### Controller 정리
+- [x] LibraryAppController에서 StorageLimitGuard 제거
+- [x] LibraryAppController에서 JwtAuthGuard, LibraryOwnerGuard만 유지
+- [x] 검증 로직은 Service 레이어에서 수행
 
 ### Service 로직 구현
-- [ ] LibraryPrivateService pushLibrary에서 파일 업로드 후 storageUsed 증가
-- [ ] LibraryPrivateService pushLibrary에서 파일 삭제 시 storageUsed 감소
+- [x] LibraryPrivateService에 검증 메서드 추가
+  - [x] `validateLibraryLimit()` - 라이브러리 개수 제한
+  - [x] `validateStorageLimit()` - 총 용량 제한
+  - [x] `validateFileSizes()` - 개별 파일 10MB
+  - [x] `validateBatchSize()` - 배치 50MB
+- [x] `createLibrary()`에서 `validateLibraryLimit()` 호출
+- [x] `pushLibrary()`에서 검증 메서드 호출
+- [x] `overwriteLibrary()`에서 검증 메서드 호출
+- [x] ✅ **완료**: `storageUsed` 필드 업데이트 로직 구현
+  - [x] LibraryRepository에 `updateStorageUsed()`, `setStorageUsed()` 메서드 추가
+  - [x] pushLibrary에서 파일 업로드 후 storageUsed 증가
+  - [x] pushLibrary에서 파일 삭제 시 storageUsed 감소 (증분 업데이트)
+  - [x] overwriteLibrary에서 전체 재계산 (storageUsed 재설정)
 
 ### API 구현
-- [ ] SubscriptionController 생성
-- [ ] SubscriptionController에 usage 엔드포인트 추가
-- [ ] SubscriptionController에 current 엔드포인트 추가
-- [ ] SubscriptionModule에 Controller 등록
+- [ ] SubscriptionController 생성 (선택 사항)
+- [ ] SubscriptionController에 usage 엔드포인트 추가 (선택 사항)
+- [ ] SubscriptionController에 current 엔드포인트 추가 (선택 사항)
+- [ ] SubscriptionModule에 Controller 등록 (선택 사항)
+
+**Note**: request.user.subscription으로 접근 가능하므로 별도 API 불필요할 수 있음
 
 ---
 

@@ -30,7 +30,6 @@ import { ResponseUserDto } from 'src/account/user/user.dto';
 import { LibraryPrivateService } from './library-private.service';
 import { LibraryCommonService } from './library-common.service';
 import { LibraryOwnerGuard } from 'src/common/guards';
-import { StorageLimitGuard } from '../common/guards/storage-limit.guard';
 
 @Controller('desktop-app/libraries')
 export class LibraryAppController {
@@ -147,7 +146,7 @@ export class LibraryAppController {
    * @returns
    */
   @Post(':libraryId/push')
-  @UseGuards(LibraryOwnerGuard, StorageLimitGuard)
+  @UseGuards(LibraryOwnerGuard)
   @UseInterceptors(FilesInterceptor('files', 1000))
   async pushProjects(
     @Request() req: { user: ResponseUserDto },
@@ -172,7 +171,7 @@ export class LibraryAppController {
    * @returns
    */
   @Post(':libraryId/overwrite')
-  @UseGuards(LibraryOwnerGuard, StorageLimitGuard)
+  @UseGuards(LibraryOwnerGuard)
   @UseInterceptors(FilesInterceptor('files', 1000))
   async overwriteLibrary(
     @Request() req: { user: ResponseUserDto },

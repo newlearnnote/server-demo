@@ -66,17 +66,44 @@ export class AuthRepository {
 
   /**
    * Find user by subject ID (JWT sub claim)
+   * 현재 활성 구독 정보 포함
    * @param sub User ID from JWT token
-   * @returns User without password field or null if not found
+   * @returns User without password field (with active subscription) or null if not found
    */
   async findUserBySub(sub: string): Promise<ResponseUserDto | null> {
-    return await this.prisma.user.findFirst({
+    const user = await this.prisma.user.findFirst({
       where: {
         id: sub,
         deletedAt: null,
       },
+      include: {
+        subscriptions: {
+          where: {
+            status: 'active',
+            deletedAt: null,
+          },
+          include: {
+            plan: true,
+          },
+          take: 1,
+          orderBy: {
+            createdAt: 'desc',
+          },
+        },
+      },
       omit: { password: true },
     });
+
+    if (!user) {
+      return null;
+    }
+
+    // subscriptions 배열을 subscription 단일 객체로 변환
+    return {
+      ...user,
+      subscription: user.subscriptions[0] || null,
+      subscriptions: undefined,
+    } as ResponseUserDto;
   }
 
   // ===== Token Blacklist Management =====

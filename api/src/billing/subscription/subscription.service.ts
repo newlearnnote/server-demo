@@ -1,13 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Subscription, SubscriptionPlan } from '@prisma/client';
 import { SubscriptionRepository } from './subscription.repository';
-import { LibraryCommonService } from '../../library/library-common.service';
 
 @Injectable()
 export class SubscriptionService {
   constructor(
     private readonly subscriptionRepository: SubscriptionRepository,
-    private readonly libraryCommonService: LibraryCommonService,
   ) {}
 
   /**
@@ -76,26 +74,12 @@ export class SubscriptionService {
   }
 
   /**
-   * 현재 저장 용량 사용량 조회 (바이트 단위)
-   */
-  async getStorageUsage(userId: string): Promise<number> {
-    return this.libraryCommonService.getTotalStorageUsage(userId);
-  }
-
-  /**
    * Library 생성 제한 개수 조회
    * FREE: 1, BASIC/PREMIUM: null (무제한)
    */
   async getLibraryLimit(userId: string): Promise<number | null> {
     const plan = await this.getCurrentPlan(userId);
     return plan.name === 'FREE' ? 1 : null;
-  }
-
-  /**
-   * Library 개수 조회
-   */
-  async getLibraryCount(userId: string): Promise<number> {
-    return this.libraryCommonService.getLibraryCount(userId);
   }
 
   /**

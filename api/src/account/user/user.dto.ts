@@ -1,4 +1,9 @@
-import { user_provider_enum, user_role_enum } from '@prisma/client';
+import {
+  user_provider_enum,
+  user_role_enum,
+  Subscription,
+  SubscriptionPlan,
+} from '@prisma/client';
 import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class UpdateUserDto {
@@ -35,4 +40,7 @@ export class ResponseUserDto {
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date | null;
+
+  // subscription (현재 활성 구독 정보)
+  subscription?: (Subscription & { plan: SubscriptionPlan }) | null;
 }
