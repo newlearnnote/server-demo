@@ -1,0 +1,10 @@
+model Tag {
+    id       String      @id @default(ulid()) @db.VarChar(255)
+    name     String      @unique @db.VarChar(100) // 태그 이름
+
+    // 관리용 필드
+    createdAt DateTime    @default(now()) @db.Timestamp(6)
+    noteTags NoteTag[]
+
+    @@map("tag")
+}

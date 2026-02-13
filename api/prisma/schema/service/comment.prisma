@@ -1,0 +1,22 @@
+model Comment {    // PK
+    id        String   @id @default(ulid()) @db.VarChar(255)
+    content   String   @db.Text // 댓글 내용
+    
+    // 관리용 필드  
+    createdAt DateTime @default(now()) @db.Timestamp(6)
+
+    // 관계 필드
+    noteId    String   @db.VarChar(255)
+    note      Note     @relation(fields: [noteId], references: [id])
+    userId    String   @db.VarChar(255)
+    user      User     @relation(fields: [userId], references: [id])
+
+    // 대댓글 기능
+    parentCommentId String?   @db.VarChar(255)
+    parentComment   Comment?  @relation("CommentToReplies", fields: [parentCommentId], references: [id])
+    replies         Comment[] @relation("CommentToReplies")
+
+    @@map("comment")
+}
+
+ 

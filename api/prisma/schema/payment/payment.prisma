@@ -1,0 +1,22 @@
+model Payment {
+    id          String      @id @default(ulid()) @db.VarChar(255)
+
+    // 결제 정보
+    amount          Decimal     @db.Decimal(10, 2) // 결제 금액
+    currency        String      @db.VarChar(5) // 통화 단위 (예: USD, EUR)
+    method          String      @db.VarChar(50) // 결제 수단 (예: credit_card, paypal)
+    status          String      @db.VarChar(50) // 결제 상태 (예: completed, pending, failed)
+    transactionId   String      @unique @db.VarChar(100) // 외부 결제 시스템의 거래 ID
+
+    // 관리용 필드
+    createdAt   DateTime    @default(now()) @db.Timestamp(6)
+
+    // 관계 필드
+    userId          String          @db.VarChar(255)
+    subscriptionId  String          @db.VarChar(255)
+    user            User            @relation(fields: [userId], references: [id])
+    subscription    Subscription    @relation(fields: [subscriptionId], references: [id])
+
+    @@index([userId])
+    @@map("payment")
+}

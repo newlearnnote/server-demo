@@ -1,0 +1,28 @@
+model Note {
+    id          String  @id @default(ulid()) @db.VarChar(255)
+    title       String  @db.VarChar(255) // 노트 제목
+    filePath    String @db.Text // 라이브러리에 저장된 파일 경로 user-library/{userId}/{libraryName}/published/file.md
+
+    // 통계 필드
+    bookmarkCount Int @default(0) @db.Integer // 북마크 수
+    commentCount  Int @default(0) @db.Integer // 댓글 수
+
+    // 관리용 필드
+    version     Int         @default(1) @db.Integer
+    createdAt   DateTime    @default(now()) @db.Timestamp(6)
+    updatedAt   DateTime    @updatedAt @db.Timestamp(6)
+    deletedAt   DateTime?   @db.Timestamp(6)
+
+    // 관계 필드
+    userId              String @db.VarChar(255)
+    user                User @relation(fields: [userId], references: [id])
+    libraryId           String @db.VarChar(255)
+    library             Library @relation(fields: [libraryId], references: [id])
+    noteTags            NoteTag[]
+    noteBookmarks       NoteBookmark[]
+    comments            Comment[]
+    linkingNoteNetworks NoteNetwork[] @relation("linkingNote")
+    linkedNoteNetworks  NoteNetwork[] @relation("linkedNote")
+
+    @@map("note")
+}

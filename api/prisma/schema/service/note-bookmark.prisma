@@ -1,0 +1,18 @@
+model NoteBookmark {
+    // PK
+    id        String   @id @default(ulid()) @db.VarChar(255)
+    
+    // 관리용 필드  
+    createdAt DateTime @default(now()) @db.Timestamp(6)
+    deletedAt DateTime? @db.Timestamp(6)
+    updatedAt DateTime @updatedAt @db.Timestamp(6)
+
+    // 관계 필드
+    noteId    String   @db.VarChar(255)
+    note      Note     @relation(fields: [noteId], references: [id])
+    userId    String   @db.VarChar(255)
+    user      User     @relation(fields: [userId], references: [id])
+
+    @@unique([noteId, userId])
+    @@map("note_bookmark")
+}

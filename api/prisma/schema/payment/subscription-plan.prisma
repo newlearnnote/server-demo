@@ -1,0 +1,20 @@
+model SubscriptionPlan {
+    id              String      @id @default(ulid()) @db.VarChar(255)
+    name            String      @unique @db.VarChar(255) // 가격 플랜 이름
+    description     String?     @db.Text // 플랜 설명
+    price           Decimal     @db.Decimal(10, 2) // 플랜 가격
+    currency        String      @db.VarChar(5) // 통화 단위 (예: USD, EUR)
+    storageLimit    String      @db.VarChar(20) // 저장 용량 제한 (예: "10GB", "100GB")
+    aiFeatures      Json        @db.Json // AI 기능 (예: {"chat": true, "imageGeneration": false})
+
+    // 관리용 필드
+    version         Int         @default(1) @db.Integer
+    createdAt       DateTime    @default(now()) @db.Timestamp(6)
+    updatedAt       DateTime    @updatedAt @db.Timestamp(6)
+    deletedAt       DateTime?   @db.Timestamp(6)
+
+    // 관계 필드
+    subscriptions   Subscription[]
+
+    @@map("subscription_plan")
+}

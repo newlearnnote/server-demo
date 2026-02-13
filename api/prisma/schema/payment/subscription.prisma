@@ -1,0 +1,25 @@
+model Subscription {
+    id                  String      @id @default(ulid()) @db.VarChar(255)
+
+    // 구독 정보
+    status              String      @db.VarChar(50) // 예: active, canceled, past_due
+    startDate           DateTime    @db.Timestamp(6)
+    endDate             DateTime?   @db.Timestamp(6)
+
+    // 관리형 필드
+    version     Int         @default(1) @db.Integer
+    createdAt   DateTime    @default(now()) @db.Timestamp(6)
+    updatedAt   DateTime    @updatedAt @db.Timestamp(6)
+    deletedAt   DateTime?   @db.Timestamp(6)
+
+    // 관계 필드
+    userId  String              @db.VarChar(255)
+    planId  String              @db.VarChar(255)
+    user    User                @relation(fields: [userId], references: [id])
+    plan    SubscriptionPlan    @relation(fields: [planId], references: [id])
+    payments Payment[]
+
+    @@index([userId])
+    @@index([planId])
+    @@map("subscription")
+}

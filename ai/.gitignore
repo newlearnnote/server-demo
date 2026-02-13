@@ -1,0 +1,50 @@
+# Environment Variables
+.env*
+!.env.example
+
+# Google Cloud Service Account
+service-account-key.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual Environments
+.venv/
+venv/
+ENV/
+env/
+
+# ChromaDB Data
+chroma/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Build
+build/
+dist/
+*.egg-info/
+
+# Documentation (개발 문서는 제외하지 않음)
+todo.*
+CLAUDE.md

@@ -1,0 +1,79 @@
+enum user_role_enum {
+  user
+  admin
+  super_admin
+}
+
+enum user_provider_enum {
+  local
+  google
+}
+
+enum user_language_enum {
+  ko
+  en
+}
+
+
+
+model User {
+  // Primary Key
+  id  String  @id @default(ulid()) @db.VarChar(255)
+
+  // User Information
+  email     String    @db.VarChar(255)
+  password  String?   @db.VarChar(255)
+  firstName String    @db.VarChar(255)
+  lastName  String    @db.VarChar(255)
+  oauthId   String?   @db.VarChar(255)
+
+  // Profile Information
+  nickname  String    @db.VarChar(100)
+  avatarUrl String    @db.VarChar(500)
+  
+  // User Settings
+  role      user_role_enum      @default(user)
+  provider  user_provider_enum  @default(local)
+  language  user_language_enum? @default(en)
+  
+  // Timestamps (Common fields)
+  version   Int         @default(1) @db.Integer
+  createdAt DateTime    @default(now()) @db.Timestamp(6)
+  updatedAt DateTime    @default(now()) @updatedAt @db.Timestamp(6)
+  deletedAt DateTime?   @db.Timestamp(6)
+  
+  // Relations
+  notices Notice[]
+  subscriptions Subscription[]
+  payments Payment[]
+  notes Note[]
+  libraries Library[]
+  comments Comment[]
+  noteBookmarks NoteBookmark[]
+
+  @@unique([email])
+  @@unique([nickname])
+  @@unique([oauthId, provider])
+  @@map("user")
+}
+
+
+model PendingUser {
+  // Primary Key
+  id               BigInt      @id @default(autoincrement()) @db.BigInt
+  
+  // User Information
+  email            String   @unique @db.VarChar
+  password         String   @db.VarChar
+  firstName        String   @db.VarChar
+  lastName         String   @db.VarChar
+  
+  // Verification
+  verificationCode String   @db.VarChar
+  codeExpiresAt    DateTime @db.Timestamp(6)
+
+  // Timestamps
+  createdAt        DateTime @default(now()) @db.Timestamp(6)
+
+  @@map("pending_user")
+}

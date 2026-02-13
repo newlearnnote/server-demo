@@ -1,0 +1,8 @@
+// JWT 토큰 블랙리스트 테이블 (JTI 기반)
+model TokenBlacklist {
+  jti       String   @id @db.VarChar(255) // JWT ID (Primary Key)
+  expiresAt DateTime @db.Timestamp(6)     // 토큰 만료 시간
+  createdAt DateTime @default(now())     // 블랙리스트 등록 시간
+
+  @@map("token_blacklist")
+}

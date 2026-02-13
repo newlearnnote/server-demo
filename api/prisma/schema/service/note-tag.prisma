@@ -1,0 +1,17 @@
+model NoteTag {
+    // PK
+    id        String    @id @default(ulid()) @db.VarChar(255)
+
+    // 관리용 필드
+    createdAt DateTime  @default(now()) @db.Timestamp(6)
+    updatedAt DateTime  @updatedAt @db.Timestamp(6)
+    deletedAt DateTime? @db.Timestamp(6)
+
+    // 관계 필드
+    noteId String @db.VarChar(255)
+    note   Note   @relation(fields: [noteId], references: [id])
+    tagId  String @db.VarChar(255)
+    tag    Tag    @relation(fields: [tagId], references: [id])
+
+    @@map("note_tag")
+}

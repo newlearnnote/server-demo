@@ -1,0 +1,23 @@
+enum noteNetworkType {
+  linked
+  embed
+}
+
+model NoteNetwork {
+    id       String             @id @default(ulid()) @db.VarChar(255)
+    type     noteNetworkType    @default(linked)
+
+    // 관리용 필드
+    version   Int               @default(1) @db.Integer
+    createdAt DateTime          @default(now()) @db.Timestamp(6)
+    updatedAt DateTime          @default(now()) @updatedAt @db.Timestamp(6)
+    deletedAt DateTime?         @db.Timestamp(6)
+
+    // 관계 필드
+    linkingNoteId     String           @db.VarChar(255)
+    linkedNoteId      String           @db.VarChar(255)
+    linkingNote       Note             @relation("linkingNote", fields: [linkingNoteId], references: [id])
+    linkedNote        Note             @relation("linkedNote", fields: [linkedNoteId], references: [id])
+
+    @@map("note_network")
+}

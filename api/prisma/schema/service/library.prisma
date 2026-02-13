@@ -1,0 +1,18 @@
+model Library {
+    id          String  @id @default(ulid()) @db.VarChar(255)
+    name        String  @db.VarChar(255)
+
+    // 관리용 필드
+    version     Int         @default(1) @db.Integer
+    linkedAt    DateTime    @default(now()) @db.Timestamp(6)
+    createdAt   DateTime    @default(now()) @db.Timestamp(6)
+    updatedAt   DateTime    @updatedAt @db.Timestamp(6)
+    deletedAt   DateTime?   @db.Timestamp(6)
+
+    // 관계 필드
+    userId  String @db.VarChar(255)
+    user    User @relation(fields: [userId], references: [id])
+    notes   Note[]
+
+    @@map("library")
+}

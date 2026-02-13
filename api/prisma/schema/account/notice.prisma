@@ -1,0 +1,31 @@
+enum notice_type_enum {
+  follow          // 팔로우 알림
+  like            // 좋아요 알림
+  system          // 시스템 알림
+}
+
+model Notice {
+  // Primary Key
+  id          String  @id @default(ulid()) @db.VarChar(255)
+  
+  // Notice Information
+  type              notice_type_enum  
+  title             String            @db.VarChar(255)
+  content           String            @db.Text
+  isRead            Boolean           @default(false) @db.Boolean
+  relatedEntityId   BigInt?           @db.BigInt
+  relatedEntityName String?           @db.VarChar(255) 
+  
+  // 관리용 필드
+  version     Int         @default(1) @db.Integer
+  createdAt   DateTime    @default(now()) @db.Timestamp(6)
+  updatedAt   DateTime    @updatedAt @db.Timestamp(6)
+  deletedAt   DateTime?   @db.Timestamp(6)
+  readAt      DateTime?   @db.Timestamp(6)
+  
+  // 관계 필드
+  userId    String @db.VarChar(255)  
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notice")
+}
