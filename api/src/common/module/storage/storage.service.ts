@@ -91,6 +91,31 @@ export class StorageService {
   }
 
   /**
+   * GCS 파일 크기 조회
+   * @param gcpPath GCS 파일 경로
+   * @returns 파일 크기 (바이트)
+   * @throws Error 파일이 존재하지 않는 경우
+   */
+  async getFileSize(gcpPath: string): Promise<number> {
+    const bucket = this.storage.bucket(this.bucketName);
+    const file = bucket.file(gcpPath);
+
+    const [exists] = await file.exists();
+    if (!exists) {
+      throw new Error(`File not found: ${gcpPath}`);
+    }
+
+    const [metadata] = await file.getMetadata();
+    const size = metadata.size;
+
+    if (typeof size === 'number') {
+      return size;
+    }
+
+    return parseInt(size || '0');
+  }
+
+  /**
    * 고유한 파일명 생성
    * @param originalName 원본 파일명
    * @returns 고유한 파일명

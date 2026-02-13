@@ -7,9 +7,10 @@ import { LibraryPrivateService } from './library-private.service';
 import { LibraryCommonService } from './library-common.service';
 import { LibraryPublishedService } from './library-published.service';
 import { UserModule } from 'src/account/user/user.module';
+import { SubscriptionModule } from '../billing/subscription/subscription.module';
 
 @Module({
-  imports: [StorageModule, UserModule],
+  imports: [StorageModule, UserModule, SubscriptionModule],
   controllers: [LibraryWebController, LibraryAppController],
   providers: [
     LibraryPrivateService,

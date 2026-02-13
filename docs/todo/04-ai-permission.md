@@ -24,7 +24,7 @@ export class PremiumGuard implements CanActivate {
     const userId = request.user?.id;
 
     if (!userId) {
-      throw new ForbiddenException('인증이 필요합니다.');
+      throw new ForbiddenException('Authentication required.');
     }
 
     const hasAccess = await this.subscriptionService.hasAiAccess(userId);
@@ -32,8 +32,8 @@ export class PremiumGuard implements CanActivate {
     if (!hasAccess) {
       const plan = await this.subscriptionService.getCurrentPlan(userId);
       throw new ForbiddenException(
-        `AI 어시스턴스는 Premium 플랜 전용 기능입니다. ` +
-        `현재 플랜: ${plan.name}. 플랜을 업그레이드하려면 구독 페이지를 방문하세요.`
+        `AI assistance is only available for Premium plan. ` +
+        `Current plan: ${plan.name}. Please upgrade your plan.`
       );
     }
 

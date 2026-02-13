@@ -255,18 +255,21 @@ export class AuthModule {}
 
 ## 체크리스트
 
-- [ ] SubscriptionService에 getCurrentSubscription 메서드 추가
-- [ ] SubscriptionService에 getCurrentPlan 메서드 추가
-- [ ] SubscriptionService에 createFreeSubscription 메서드 추가
-- [ ] SubscriptionService에 hasAiAccess 메서드 추가
-- [ ] SubscriptionService에 getStorageLimit 메서드 추가
-- [ ] SubscriptionService에 getStorageUsage 메서드 추가
-- [ ] SubscriptionService에 getLibraryLimit 메서드 추가
-- [ ] parseStorageLimit 헬퍼 메서드 구현
-- [ ] formatBytes 헬퍼 메서드 구현
-- [ ] AuthService에 SubscriptionService 의존성 주입
-- [ ] validateGoogleUser에서 신규 사용자 생성 시 FREE 구독 자동 생성
-- [ ] AuthModule에 SubscriptionModule import
+- [x] SubscriptionService에 getCurrentSubscription 메서드 추가 (findCurrentSubscription으로 구현)
+- [x] SubscriptionService에 getCurrentPlan 메서드 추가
+- [x] SubscriptionService에 createFreeSubscription 메서드 추가
+- [x] SubscriptionService에 hasAiAccess 메서드 추가
+- [x] SubscriptionService에 getStorageLimit 메서드 추가
+- [x] LibraryCommonService에 getStorageUsage 메서드 추가
+- [x] SubscriptionService에 getLibraryLimit 메서드 추가
+- [x] LibraryCommonService에 getLibraryCount 메서드 추가
+- [x] parseStorageLimit 헬퍼 메서드 구현
+- [x] formatBytes 헬퍼 메서드 구현
+- [x] SubscriptionRepository 구현 (Service-Repository 패턴)
+- [x] SubscriptionModule에 LibraryModule import (모듈 경계 준수)
+- [x] AuthService에 SubscriptionService 의존성 주입
+- [x] validateGoogleUser에서 신규 사용자 생성 시 FREE 구독 자동 생성
+- [x] AuthModule에 SubscriptionModule import
 
 ---
 

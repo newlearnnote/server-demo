@@ -228,7 +228,7 @@ async createLibrary(userId: string, dto: CreateLibraryDto): Promise<Library> {
     });
 
     if (libraryCount >= 1) {
-      throw new BadRequestException('Free 플랜은 1개의 Library만 생성 가능합니다. Basic 플랜으로 업그레이드하세요.');
+      throw new BadRequestException('FREE plan allows only 1 library. Please upgrade to Basic plan.');
     }
   }
 
@@ -262,7 +262,7 @@ async pushLibrary(userId: string, files: Express.Multer.File[], libraryId: strin
   if (currentUsage + uploadSize > storageLimit) {
     const availableSpace = storageLimit - currentUsage;
     throw new BadRequestException(
-      `저장 용량이 부족합니다. (사용 가능: ${this.formatBytes(availableSpace)}, 필요: ${this.formatBytes(uploadSize)})`
+      `Insufficient storage space. (Available: ${this.formatBytes(availableSpace)}, Required: ${this.formatBytes(uploadSize)})`
     );
   }
 
@@ -330,13 +330,13 @@ export class PremiumGuard implements CanActivate {
     const userId = request.user?.id;
 
     if (!userId) {
-      throw new ForbiddenException('인증이 필요합니다.');
+      throw new ForbiddenException('Authentication required.');
     }
 
     const hasAccess = await this.subscriptionService.hasAiAccess(userId);
 
     if (!hasAccess) {
-      throw new ForbiddenException('AI 어시스턴스는 Premium 플랜 전용 기능입니다. 플랜을 업그레이드하세요.');
+      throw new ForbiddenException('AI assistance is only available for Premium plan. Please upgrade your plan.');
     }
 
     return true;

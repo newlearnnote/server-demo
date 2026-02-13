@@ -19,6 +19,7 @@ import { UserService } from '../user/user.service';
 import { env } from 'process';
 import * as crypto from 'crypto';
 import { ResponseUserDto } from '../user/user.dto';
+import { SubscriptionService } from '../../billing/subscription/subscription.service';
 
 @Injectable()
 export class AuthService {
@@ -26,6 +27,7 @@ export class AuthService {
     private readonly authRepository: AuthRepository,
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
+    private readonly subscriptionService: SubscriptionService,
   ) {}
 
   // ===== Google Login =====
@@ -90,6 +92,9 @@ export class AuthService {
           createUserDto,
           createProfileDto,
         );
+
+        // FREE 플랜 구독 생성
+        await this.subscriptionService.createFreeSubscription(user.id);
       }
     }
 
