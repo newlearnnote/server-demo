@@ -8,6 +8,7 @@ import { GoogleStrategy, GoogleDesktopStrategy } from './google.strategy';
 import { JwtAuthStrategy } from './jwt/jwt.strategy';
 import { UserModule } from '../user/user.module';
 import { AuthWebController } from './auth-web.controller';
+import { SubscriptionModule } from '../../billing/subscription/subscription.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { AuthWebController } from './auth-web.controller';
     }),
     PassportModule,
     UserModule,
+    SubscriptionModule,
   ],
   controllers: [AuthAppController, AuthWebController],
   providers: [

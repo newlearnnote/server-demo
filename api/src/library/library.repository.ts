@@ -163,4 +163,23 @@ export class LibraryRepository {
       },
     });
   }
+
+  /**
+   * 사용자의 총 저장 용량 사용량 조회
+   * @param userId 사용자 ID
+   * @returns 총 사용량 (바이트)
+   */
+  async getTotalStorageUsage(userId: string): Promise<number> {
+    const result = await this.prisma.library.aggregate({
+      where: {
+        userId,
+        deletedAt: null,
+      },
+      _sum: {
+        storageUsed: true,
+      },
+    });
+
+    return Number(result._sum.storageUsed || 0);
+  }
 }
