@@ -117,6 +117,7 @@ graph TB
 
 **1. 시스템 아키텍처**
 - **[System Architecture](./docs/ARCHITECTURE.md)** - 전체 시스템 개요 및 기술 스택 선택 이유
+- **[Module Dependency](./docs/MODULE_DEPENDENCY.md)** - Subscription, Library, Storage 모듈 관계 및 순환 의존성 해결
 
 **2. 데이터 구조**
 - **[Database Architecture](./docs/DATABASE.md)** - PostgreSQL 스키마, ChromaDB 벡터 스토어, ERD
@@ -124,6 +125,7 @@ graph TB
 **3. 핵심 기능**
 - **[Authentication & Authorization](./docs/AUTH_FLOW.md)** - Google OAuth 2.0, JWT, 멀티 플랫폼 인증
 - **[File Storage Strategy](./docs/FILE_STORAGE.md)** - GCS 파일 관리, Signed URL, 라이브러리 파일 트리
+- **[Storage Limit System](./docs/STORAGE_LIMIT.md)** - 플랜별 저장 용량 제한 및 검증 로직
 - **[Async Processing](./docs/ASYNC_PROCESSING.md)** - FastAPI Background Tasks, 비동기 문서 처리
 - **[RAG Pipeline](./docs/RAG_PIPELINE.md)** - 문서 파싱, 임베딩, 벡터 검색, AI 응답 생성
 

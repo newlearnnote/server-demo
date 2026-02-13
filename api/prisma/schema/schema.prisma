@@ -232,6 +232,7 @@ model Comment {    // PK
 model Library {
     id          String  @id @default(ulid()) @db.VarChar(255)
     name        String  @db.VarChar(255)
+    storageUsed BigInt  @default(0) @db.BigInt
 
     // 관리용 필드
     version     Int         @default(1) @db.Integer

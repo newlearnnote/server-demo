@@ -26,6 +26,7 @@
     "prisma:dev:generate": "npm run prisma:merge && dotenv -e .env.development -- npx prisma generate --schema=./prisma/schema/schema.prisma",
     "prisma:dev:push": "npm run prisma:merge && dotenv -e .env.development -- npx prisma db push --schema=./prisma/schema/schema.prisma",
     "prisma:dev:studio": "npm run prisma:merge && dotenv -e .env.development -- npx prisma studio --schema=./prisma/schema/schema.prisma",
+    "prisma:seed": "dotenv -e .env.development -- ts-node prisma/seed.ts",
     "prisma:prod:generate": "npm run prisma:merge && dotenv -e .env.production -- npx prisma generate --schema=./prisma/schema/schema.prisma",
     "prisma:prod:push": "npm run prisma:merge && dotenv -e .env.production -- npx prisma db push --schema=./prisma/schema/schema.prisma",
     "prisma:prod:migrate": "npm run prisma:merge && dotenv -e .env.production -- npx prisma migrate deploy --schema=./prisma/schema/schema.prisma"

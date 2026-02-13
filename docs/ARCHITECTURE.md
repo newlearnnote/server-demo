@@ -391,11 +391,22 @@ sequenceDiagram
 
 상세한 아키텍처 내용은 각 전문 문서를 참고하세요:
 
+### Core Architecture
+- [모듈 의존성 구조](./MODULE_DEPENDENCY.md) - Subscription, Library, Storage 관계
+- [저장 용량 제한 시스템](./STORAGE_LIMIT.md) - 플랜별 용량 제한 구현
+
+### Authentication & Security
 - [인증/인가 플로우](./AUTH_FLOW.md) - Google OAuth, JWT, Refresh Token
-- [파일 저장 전략](./FILE_STORAGE.md) - GCS, Signed URL, 파일 트리
-- [비동기 처리](./ASYNC_PROCESSING.md) - FastAPI Background Tasks
-- [데이터베이스](./DATABASE.md) - PostgreSQL, ChromaDB, 인덱싱
-- [RAG 파이프라인](./RAG_PIPELINE.md) - 문서 처리, 검색, 응답 생성
-- [클라우드 인프라](./INFRASTRUCTURE.md) - Cloud Run, Docker, 배포
 - [보안](./SECURITY.md) - 인증, 암호화, API 보안
+
+### Data & Storage
+- [데이터베이스](./DATABASE.md) - PostgreSQL, ChromaDB, 인덱싱
+- [파일 저장 전략](./FILE_STORAGE.md) - GCS, Signed URL, 파일 트리
+
+### AI & Processing
+- [RAG 파이프라인](./RAG_PIPELINE.md) - 문서 처리, 검색, 응답 생성
+- [비동기 처리](./ASYNC_PROCESSING.md) - FastAPI Background Tasks
+
+### Infrastructure & Performance
+- [클라우드 인프라](./INFRASTRUCTURE.md) - Cloud Run, Docker, 배포
 - [성능 최적화](./PERFORMANCE.md) - Rate Limiting, 캐싱, 벡터 검색

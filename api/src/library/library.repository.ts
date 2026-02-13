@@ -163,4 +163,59 @@ export class LibraryRepository {
       },
     });
   }
+
+  /**
+   * 사용자의 총 저장 용량 사용량 조회
+   * @param userId 사용자 ID
+   * @returns 총 사용량 (바이트)
+   */
+  async getTotalStorageUsage(userId: string): Promise<number> {
+    const result = await this.prisma.library.aggregate({
+      where: {
+        userId,
+        deletedAt: null,
+      },
+      _sum: {
+        storageUsed: true,
+      },
+    });
+
+    return Number(result._sum.storageUsed || 0);
+  }
+
+  /**
+   * 저장 용량 증분 업데이트 (파일 추가/삭제 시)
+   * @param libraryId 라이브러리 ID
+   * @param delta 변경량 (바이트, 양수/음수)
+   */
+  async updateStorageUsed(libraryId: string, delta: number): Promise<void> {
+    await this.prisma.library.update({
+      where: {
+        id: libraryId,
+      },
+      data: {
+        storageUsed: {
+          increment: delta,
+        },
+        updatedAt: new Date(),
+      },
+    });
+  }
+
+  /**
+   * 저장 용량 재설정 (전체 덮어쓰기 시)
+   * @param libraryId 라이브러리 ID
+   * @param size 새로운 총 용량 (바이트)
+   */
+  async setStorageUsed(libraryId: string, size: number): Promise<void> {
+    await this.prisma.library.update({
+      where: {
+        id: libraryId,
+      },
+      data: {
+        storageUsed: size,
+        updatedAt: new Date(),
+      },
+    });
+  }
 }

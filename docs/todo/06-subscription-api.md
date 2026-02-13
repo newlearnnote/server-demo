@@ -206,7 +206,7 @@ async upgradePlan(userId: string, newPlanName: string): Promise<Subscription> {
 
   // 현재 플랜과 동일한 경우
   if (currentPlan.name === newPlanName) {
-    throw new BadRequestException('이미 동일한 플랜을 사용 중입니다.');
+    throw new BadRequestException('You are already on this plan.');
   }
 
   // FREE로 다운그레이드 시도
@@ -254,9 +254,9 @@ async downgradePlan(userId: string, newPlanName: string): Promise<Subscription> 
 
   if (currentUsage > newLimit) {
     throw new BadRequestException(
-      `다운그레이드할 수 없습니다. 현재 사용량(${this.formatBytes(currentUsage)})이 ` +
-      `${newPlanName} 플랜의 제한(${this.formatBytes(newLimit)})을 초과합니다. ` +
-      `파일을 삭제한 후 다시 시도하세요.`
+      `Cannot downgrade. Current usage (${this.formatBytes(currentUsage)}) exceeds ` +
+      `${newPlanName} plan limit (${this.formatBytes(newLimit)}). ` +
+      `Please delete files and try again.`
     );
   }
 
@@ -268,8 +268,8 @@ async downgradePlan(userId: string, newPlanName: string): Promise<Subscription> 
 
     if (libraryCount > 1) {
       throw new BadRequestException(
-        `다운그레이드할 수 없습니다. FREE 플랜은 1개의 Library만 허용됩니다. ` +
-        `현재 ${libraryCount}개의 Library가 있습니다. Library를 삭제한 후 다시 시도하세요.`
+        `Cannot downgrade. FREE plan allows only 1 library. ` +
+        `You currently have ${libraryCount} libraries. Please delete libraries and try again.`
       );
     }
   }
@@ -305,7 +305,7 @@ async cancelSubscription(userId: string): Promise<void> {
   const subscription = await this.getCurrentSubscription(userId);
 
   if (!subscription) {
-    throw new NotFoundException('활성 구독이 없습니다.');
+    throw new NotFoundException('No active subscription found.');
   }
 
   await this.prisma.subscription.update({
@@ -337,7 +337,7 @@ async cancelSubscription(userId: string): Promise<void> {
 async cancelSubscription(@Request() req) {
   const userId = req.user.id;
   await this.subscriptionService.cancelSubscription(userId);
-  return { message: '구독이 취소되었습니다. FREE 플랜으로 전환되었습니다.' };
+  return { message: 'Subscription cancelled. Downgraded to FREE plan.' };
 }
 ```
 

@@ -147,11 +147,7 @@ export class LibraryAppController {
    */
   @Post(':libraryId/push')
   @UseGuards(LibraryOwnerGuard)
-  @UseInterceptors(
-    FilesInterceptor('files', 1000, {
-      limits: { fileSize: 10 * 1024 * 1024 }, // 10MB per file
-    }),
-  )
+  @UseInterceptors(FilesInterceptor('files', 1000))
   async pushProjects(
     @Request() req: { user: ResponseUserDto },
     @UploadedFiles() files: Express.Multer.File[],
@@ -176,11 +172,7 @@ export class LibraryAppController {
    */
   @Post(':libraryId/overwrite')
   @UseGuards(LibraryOwnerGuard)
-  @UseInterceptors(
-    FilesInterceptor('files', 1000, {
-      limits: { fileSize: 10 * 1024 * 1024 }, // 10MB per file
-    }),
-  )
+  @UseInterceptors(FilesInterceptor('files', 1000))
   async overwriteLibrary(
     @Request() req: { user: ResponseUserDto },
     @UploadedFiles() files: Express.Multer.File[],

@@ -173,13 +173,12 @@ main()
 
 ## 체크리스트
 
-- [ ] Library 모델에 storageUsed 필드 추가
-- [ ] Prisma migration 생성 및 실행
-- [ ] prisma/seed.ts 파일 생성
-- [ ] SubscriptionPlan 시드 데이터 작성 (FREE, BASIC, PREMIUM)
-- [ ] package.json에 seed 스크립트 추가
-- [ ] 시드 데이터 실행
-- [ ] Prisma Studio로 데이터 확인
+- [x] Library 모델에 storageUsed 필드 추가
+- [x] Prisma migration 생성 및 실행 (prisma:dev:push 사용)
+- [x] prisma/seed.ts 파일 생성
+- [x] SubscriptionPlan 시드 데이터 작성 (FREE, BASIC, PREMIUM)
+- [x] package.json에 seed 스크립트 추가
+- [x] 시드 데이터 실행
 
 ---
 

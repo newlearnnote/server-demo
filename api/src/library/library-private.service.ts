@@ -15,13 +15,19 @@ import {
 import { LibraryRepository } from './library.repository';
 import { LibraryCommonService } from './library-common.service';
 import { Library } from '@prisma/client';
+import { SubscriptionService } from '../billing/subscription/subscription.service';
 
 @Injectable()
 export class LibraryPrivateService {
+  // 상수 정의
+  private readonly MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+  private readonly BATCH_SIZE_LIMIT = 50 * 1024 * 1024; // 50MB
+
   constructor(
     private readonly storageService: StorageService,
     private readonly libraryCommonService: LibraryCommonService,
     private readonly libraryRepository: LibraryRepository,
+    private readonly subscriptionService: SubscriptionService,
   ) {}
 
   // ===== CREATE =====
@@ -36,19 +42,10 @@ export class LibraryPrivateService {
     userId: string,
     libraryName: string,
   ): Promise<LibraryConfigData> {
-    /**
-     * TODO: 사용자 구독 상태에 따른 라이브러리 생성 가능 여부 확인
-     * 데모 버전은 모두 다 2개까지만 생성 가능
-     */
-    const possible =
-      await this.libraryCommonService.checkUserLibraryLimit(userId);
-    if (!possible) {
-      throw new BadRequestException(
-        'You have reached the maximum number of libraries allowed for your account. Demo version allows up to 2 libraries.',
-      );
-    }
+    // 1. 라이브러리 개수 제한 검증
+    await this.validateLibraryLimit(userId);
 
-    // 본인 계정 내에서 동일 이름의 라이브러리가 존재하는지 확인
+    // 2. 본인 계정 내에서 동일 이름의 라이브러리가 존재하는지 확인
     await this.libraryCommonService.checkLibraryName(userId, libraryName);
 
     // DB에 라이브러리 생성
@@ -220,26 +217,44 @@ export class LibraryPrivateService {
     libraryId: string,
     deletedFiles?: DeletedFileDto[],
   ): Promise<LibraryMetadata> {
+    // 1. 파일 검증
+    this.validateFileSizes(files);
+    this.validateBatchSize(files);
+    await this.validateStorageLimit(userId, files);
+
     // GCS 경로는 libraryId 사용
     const gcpPath = `user-libraries/${userId}/${libraryId}/private`;
 
     try {
-      // /userId/libraryName/deletedFiles 경로의 파일들 삭제
+      let uploadSize = 0;
+      let deleteSize = 0;
+
+      // 2. 삭제할 파일 크기 계산 및 삭제
       if (deletedFiles && deletedFiles.length > 0) {
-        const deletePromises = deletedFiles.map((fileDto) => {
+        const deletePromises = deletedFiles.map(async (fileDto) => {
           const filePath = `${gcpPath}/${fileDto.path.replace(/__SLASH__/g, '/')}`;
-          return this.storageService.deleteFile(filePath);
+
+          // 파일 크기 조회 (삭제 전)
+          try {
+            const size = await this.storageService.getFileSize(filePath);
+            deleteSize += size;
+          } catch (error) {
+            // 파일이 이미 없으면 무시 (크기는 0으로 계산)
+            console.warn(`File not found for size calculation: ${filePath}`);
+          }
+
+          // 파일 삭제
+          await this.storageService.deleteFile(filePath);
         });
+
         await Promise.all(deletePromises); // ← 병렬 삭제
       }
 
-      // GCS 업로드 완료
-      let totalSize = 0;
-      // 경로 구분자 디코딩: __SLASH__ → /
+      // 3. 업로드 파일 크기 계산 및 업로드
       const uploadPromises = files.map((file) => {
         const decodedFileName = file.originalname.replace(/__SLASH__/g, '/');
         const filePath = `${gcpPath}/${decodedFileName}`;
-        totalSize += file.size;
+        uploadSize += file.size;
 
         // Buffer → PassThrough Stream 변환 (메모리 효율성)
         const { PassThrough } = require('stream');
@@ -251,9 +266,15 @@ export class LibraryPrivateService {
 
       await Promise.all(uploadPromises); // ← 병렬 업로드
 
+      // 4. storageUsed 증분 업데이트 (업로드 - 삭제)
+      const netChange = uploadSize - deleteSize;
+      if (netChange !== 0) {
+        await this.libraryRepository.updateStorageUsed(libraryId, netChange);
+      }
+
       return {
         fileCount: files.length,
-        totalSize: this.libraryCommonService.formatFileSize(totalSize),
+        totalSize: this.libraryCommonService.formatFileSize(uploadSize),
         lastModified: new Date().toISOString(),
       };
     } catch (error) {
@@ -285,15 +306,20 @@ export class LibraryPrivateService {
     files: Express.Multer.File[],
     libraryId: string,
   ): Promise<LibraryMetadata> {
+    // 1. 파일 검증
+    this.validateFileSizes(files);
+    this.validateBatchSize(files);
+    await this.validateStorageLimit(userId, files);
+
     // GCS 경로는 libraryId 사용
     const gcpPath = `user-libraries/${userId}/${libraryId}/private`;
     try {
-      // 기존 파일들 삭제
+      // 2. 기존 파일들 삭제
       await this.storageService.deleteFolder(gcpPath);
       await this.storageService.ensureLibraryFolder(userId, libraryId);
-      // GCS 업로드 완료
+
+      // 3. 새 파일 업로드 및 크기 계산
       let totalSize = 0;
-      // 경로 구분자 디코딩: __SLASH__ → /
       const uploadPromises = files.map((file) => {
         const decodedFileName = file.originalname.replace(/__SLASH__/g, '/');
         const filePath = `${gcpPath}/${decodedFileName}`;
@@ -308,6 +334,9 @@ export class LibraryPrivateService {
       });
 
       await Promise.all(uploadPromises); // ← 병렬 업로드
+
+      // 4. storageUsed 재설정 (전체 덮어쓰기이므로)
+      await this.libraryRepository.setStorageUsed(libraryId, totalSize);
 
       return {
         fileCount: files.length,
@@ -351,6 +380,104 @@ export class LibraryPrivateService {
     } catch (error) {
       console.error(`[Pull] Failed to download from ${gcpPath}:`, error);
       throw error;
+    }
+  }
+
+  // ===== 검증 로직 (Private Methods) =====
+
+  /**
+   * 라이브러리 개수 제한 검증
+   * @param userId 사용자 ID
+   * @throws BadRequestException 제한 초과 시
+   */
+  private async validateLibraryLimit(userId: string): Promise<void> {
+    const currentCount =
+      await this.libraryCommonService.getLibraryCount(userId);
+    const limit = await this.subscriptionService.getLibraryLimit(userId);
+
+    if (limit !== null && currentCount >= limit) {
+      const plan = await this.subscriptionService.getCurrentPlan(userId);
+      throw new BadRequestException(
+        `${plan.name} plan allows maximum ${limit} library(ies). ` +
+          `Current: ${currentCount}. ` +
+          `Please upgrade your plan to create more libraries.`,
+      );
+    }
+  }
+
+  /**
+   * 스토리지 용량 제한 검증
+   * @param userId 사용자 ID
+   * @param files 업로드할 파일 목록
+   * @throws BadRequestException 용량 초과 시
+   */
+  private async validateStorageLimit(
+    userId: string,
+    files: Express.Multer.File[],
+  ): Promise<void> {
+    const uploadSize = files.reduce((sum, file) => sum + file.size, 0);
+    const currentUsage =
+      await this.libraryCommonService.getTotalStorageUsage(userId);
+    const storageLimit = await this.subscriptionService.getStorageLimit(userId);
+
+    if (currentUsage + uploadSize > storageLimit) {
+      const availableSpace = storageLimit - currentUsage;
+      const plan = await this.subscriptionService.getCurrentPlan(userId);
+
+      throw new BadRequestException(
+        `Insufficient storage space.\n` +
+          `Current plan: ${plan.name}\n` +
+          `Available space: ${this.subscriptionService.formatBytes(availableSpace)}\n` +
+          `Upload size: ${this.subscriptionService.formatBytes(uploadSize)}\n` +
+          `Storage used: ${this.subscriptionService.formatBytes(currentUsage)} / ` +
+          `${this.subscriptionService.formatBytes(storageLimit)}\n` +
+          `Please upgrade your plan for more storage.`,
+      );
+    }
+  }
+
+  /**
+   * 개별 파일 크기 제한 검증 (10MB)
+   * @param files 업로드할 파일 목록
+   * @throws BadRequestException 파일 크기 초과 시
+   */
+  private validateFileSizes(files: Express.Multer.File[]): void {
+    const oversizedFiles = files.filter(
+      (file) => file.size > this.MAX_FILE_SIZE,
+    );
+
+    if (oversizedFiles.length > 0) {
+      const fileList = oversizedFiles
+        .map(
+          (file) =>
+            `- ${file.originalname}: ${this.subscriptionService.formatBytes(file.size)}`,
+        )
+        .join('\n');
+
+      throw new BadRequestException(
+        `Individual file size exceeds limit.\n` +
+          `File size limit: ${this.subscriptionService.formatBytes(this.MAX_FILE_SIZE)}\n` +
+          `Oversized files:\n${fileList}\n` +
+          `Please reduce file sizes or upload separately.`,
+      );
+    }
+  }
+
+  /**
+   * 배치 업로드 총 용량 제한 검증 (50MB)
+   * @param files 업로드할 파일 목록
+   * @throws BadRequestException 배치 크기 초과 시
+   */
+  private validateBatchSize(files: Express.Multer.File[]): void {
+    const uploadSize = files.reduce((sum, file) => sum + file.size, 0);
+
+    if (uploadSize > this.BATCH_SIZE_LIMIT) {
+      throw new BadRequestException(
+        `Upload batch size exceeds limit.\n` +
+          `Batch limit: ${this.subscriptionService.formatBytes(this.BATCH_SIZE_LIMIT)}\n` +
+          `Your upload: ${this.subscriptionService.formatBytes(uploadSize)} (${files.length} files)\n` +
+          `Please upload files in smaller batches.`,
+      );
     }
   }
 }

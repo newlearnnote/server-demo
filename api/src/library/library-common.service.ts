@@ -249,6 +249,24 @@ export class LibraryCommonService {
   }
 
   /**
+   * 사용자의 라이브러리 개수 조회
+   * @param userId 사용자 ID
+   * @returns 라이브러리 개수
+   */
+  async getLibraryCount(userId: string): Promise<number> {
+    return await this.libraryRepository.findLibraryCountByUserId(userId);
+  }
+
+  /**
+   * 사용자의 총 저장 용량 사용량 조회
+   * @param userId 사용자 ID
+   * @returns 총 사용량 (바이트)
+   */
+  async getTotalStorageUsage(userId: string): Promise<number> {
+    return await this.libraryRepository.getTotalStorageUsage(userId);
+  }
+
+  /**
    * filePath가 private인지 published인지 확인
    * @param userId
    * @param libraryId
