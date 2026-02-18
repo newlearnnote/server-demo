@@ -10,8 +10,6 @@
 - [5. 서비스 간 통합](#5-서비스-간-통합)
 - [6. 결론 및 향후 개선](#6-결론-및-향후-개선)
 
----
-
 ## 1. 개요
 
 ### 1.1 프로젝트 배경
@@ -62,8 +60,6 @@ graph LR
 - ✅ **처리 효율**: Background Tasks를 통한 비동기 문서 처리 파이프라인
 - ✅ **개발 속도**: 자동 API 문서화, Pydantic 타입 검증, 직관적인 라우팅
 - ✅ **확장성**: RAG 파이프라인 독립 운영, AI 모델 교체 용이
-
----
 
 ## 2. 시스템 아키텍처 개요
 
@@ -203,8 +199,6 @@ graph LR
 - [인증/인가 플로우](./AUTH_FLOW.md) - Google OAuth 2.0, JWT, Refresh Token
 - [파일 저장 전략](./FILE_STORAGE.md) - GCS, Signed URL, LibraryOwnerGuard
 
----
-
 ## 4. FastAPI AI 서버
 
 ### 4.1 서비스 구조
@@ -267,8 +261,6 @@ graph TB
 **상세 내용:**
 - [비동기 처리 전략](./ASYNC_PROCESSING.md) - Background Tasks, 성능 최적화
 
----
-
 ## 5. 서비스 간 통합
 
 ### 5.1 통합 방식
@@ -312,16 +304,15 @@ sequenceDiagram
 ```
 
 **현재 통합 상태:**
-- 🔄 **독립 운영**: NestJS와 FastAPI는 각각 독립적으로 PostgreSQL 접근
-- 🔄 **데이터 동기화**: 현재는 각 서버가 자체 데이터 모델 유지
-- 🚀 **향후 개선**: NestJS에서 FastAPI로 HTTP 요청을 통한 통합 (계획)
+- **독립 운영**: NestJS와 FastAPI는 각각 독립적으로 PostgreSQL 접근
+- **데이터 동기화**: 현재는 각 서버가 자체 데이터 모델 유지
+- **향후 개선**: NestJS에서 FastAPI로 HTTP 요청을 통한 통합 (계획)
 
 **통합 포인트:**
 1. **문서 업로드**: NestJS → FastAPI (파일 처리 위임)
 2. **AI 질의응답**: NestJS → FastAPI (RAG 처리 요청)
 3. **문서 삭제**: NestJS → FastAPI (벡터 스토어 동기화)
 
----
 
 ## 6. 결론 및 향후 개선
 
@@ -351,18 +342,10 @@ sequenceDiagram
    - 타입 안전성 (TypeScript, Pydantic)
    - 자동 API 문서화 (Swagger)
 
-### 6.2 현재 제한사항
-
-**Rate Limiting:**
-- ⚠️ In-Memory 방식: 서버 재시작 시 데이터 손실
-- ⚠️ 단일 서버 환경에만 적합
-- ⚠️ 분산 환경 미지원
+### 6.2 향후 개선 방향
 
 **서비스 통합:**
-- 🔄 NestJS-FastAPI HTTP 통합 미구현
-- 🔄 각 서버가 독립적으로 PostgreSQL 접근
-
-### 6.3 향후 개선 방향
+- [ ] **NestJS-FastAPI HTTP 통합**
 
 **성능 및 확장성:**
 - [ ] **Redis 캐싱 도입**: 사용자 프로필, API 응답 캐싱으로 DB 부하 감소
@@ -384,8 +367,6 @@ sequenceDiagram
 - [ ] **Cloud Logging**: 중앙화된 로그 관리
 - [ ] **Cloud Monitoring**: 성능 메트릭 수집 및 알람
 - [ ] **Distributed Tracing**: 서비스 간 요청 추적
-
----
 
 ## 관련 문서
 

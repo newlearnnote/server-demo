@@ -9,8 +9,6 @@
 - [4. Cloud Run 배포](#4-cloud-run-배포)
 - [5. 환경 구성](#5-환경-구성)
 
----
-
 ## 1. 개요
 
 NewLearnNote는 **Google Cloud Platform (GCP)**을 활용하여 서버리스 아키텍처로 배포됩니다.
@@ -24,8 +22,6 @@ NewLearnNote는 **Google Cloud Platform (GCP)**을 활용하여 서버리스 아
 | **비용 효율** | Pay-as-you-go (사용한 만큼 지불) |
 | **통합 서비스** | GCS, Cloud SQL, Memorystore 등 |
 | **Zero-downtime** | Blue/Green 배포 지원 |
-
----
 
 ## 2. 배포 아키텍처
 
@@ -66,10 +62,10 @@ graph TB
 ### 2.2 Cloud Run 특징
 
 **서버리스 컨테이너:**
-- ✅ **완전 관리형**: 서버 관리 불필요
-- ✅ **자동 확장**: 0 → N 인스턴스
-- ✅ **트래픽 기반**: 요청 수에 따라 확장
-- ✅ **Cold Start**: 첫 요청 시 약간 지연 (1-2초)
+- **완전 관리형**: 서버 관리 불필요
+- **자동 확장**: 0 → N 인스턴스
+- **트래픽 기반**: 요청 수에 따라 확장
+- **Cold Start**: 첫 요청 시 약간 지연 (1-2초)
 
 **가격 모델:**
 ```
@@ -81,8 +77,6 @@ graph TB
 - 요청: 100,000회/월
 → 월 ~$5-10
 ```
-
----
 
 ## 3. Docker 컨테이너화
 
@@ -134,9 +128,9 @@ CMD ["node", "dist/main"]
 ```
 
 **Multi-stage Build 이점:**
-- ✅ 최종 이미지 크기 감소 (50-70% 절감)
-- ✅ 빌드 의존성 제외
-- ✅ 보안 강화 (소스 코드 미포함)
+- 최종 이미지 크기 감소
+- 빌드 의존성 제외
+- 보안 강화 (소스 코드 미포함)
 
 ### 3.2 FastAPI Dockerfile
 
@@ -197,8 +191,6 @@ venv
 .venv
 chroma
 ```
-
----
 
 ## 4. Cloud Run 배포
 
@@ -278,8 +270,6 @@ spec:
         - containerPort: 8000
 ```
 
----
-
 ## 5. 환경 구성
 
 ### 5.1 환경 변수 관리
@@ -349,8 +339,6 @@ gcloud run deploy nestjs-api \
   --set-env-vars GOOGLE_APPLICATION_CREDENTIALS=/secrets/key.json
 ```
 
----
-
 ## 6. CI/CD (향후 구현)
 
 ### 6.1 GitHub Actions
@@ -387,8 +375,6 @@ jobs:
           image: gcr.io/${{ secrets.GCP_PROJECT }}/nestjs-api:${{ github.sha }}
           region: asia-northeast3
 ```
-
----
 
 ## 7. 모니터링 (향후 구현)
 
@@ -449,8 +435,6 @@ FastAPI (AI 처리):
 - CPU: 2 vCPU
 - Memory: 1Gi (임베딩 생성 시 메모리 필요)
 ```
-
----
 
 ## 참고 자료
 

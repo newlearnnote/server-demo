@@ -3,8 +3,6 @@
 ## 개요
 NewLearn Note의 결제 및 구독 시스템 데이터베이스 스키마
 
----
-
 ## ERD Diagram
 
 ```mermaid
@@ -87,8 +85,6 @@ erDiagram
     }
 ```
 
----
-
 ## 테이블 상세 설명
 
 ### 1. User (사용자)
@@ -121,8 +117,6 @@ erDiagram
 - Payment (1:N) - 결제 내역
 - Library (1:N) - 라이브러리
 
----
-
 ### 2. SubscriptionPlan (구독 플랜)
 **테이블명**: `subscription_plan`
 
@@ -151,8 +145,6 @@ erDiagram
 
 **관계**:
 - Subscription (1:N) - 구독
-
----
 
 ### 3. Subscription (구독)
 **테이블명**: `subscription`
@@ -188,8 +180,6 @@ erDiagram
 - User (N:1) - 소유자
 - SubscriptionPlan (N:1) - 플랜
 - Payment (1:N) - 결제 내역
-
----
 
 ### 4. Payment (결제)
 **테이블명**: `payment`
@@ -228,8 +218,6 @@ erDiagram
 - User (N:1) - 결제자
 - Subscription (N:1) - 구독
 
----
-
 ### 5. Library (라이브러리)
 **테이블명**: `library`
 
@@ -259,8 +247,6 @@ erDiagram
 **관계**:
 - User (N:1) - 소유자
 - Note (1:N) - 노트
-
----
 
 ## 비즈니스 플로우
 
@@ -316,8 +302,6 @@ erDiagram
    - Library.storageUsed += uploadSize
 ```
 
----
-
 ## 쿼리 예시
 
 ### 현재 활성 구독 조회
@@ -358,16 +342,12 @@ WHERE p.userId = ?
 ORDER BY p.createdAt DESC;
 ```
 
----
-
 ## 인덱스 전략
 
 ### 성능 최적화를 위한 인덱스
 1. **Subscription**: (userId, status, deletedAt) - 현재 구독 조회
 2. **Library**: (userId, deletedAt) - 용량 계산
 3. **Payment**: (userId, createdAt) - 결제 내역 조회
-
----
 
 ## 데이터 무결성 규칙
 
@@ -389,8 +369,6 @@ ORDER BY p.createdAt DESC;
 2. 구독 다운그레이드 시 현재 사용량이 새 플랜 제한 이하여야 함
 3. 활성 구독은 사용자당 최대 1개 (status='active' AND deletedAt IS NULL)
 4. Payment는 삭제 불가 (감사 추적용)
-
----
 
 ## 변경 이력
 

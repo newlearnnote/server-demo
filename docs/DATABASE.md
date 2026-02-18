@@ -8,8 +8,6 @@
 - [3. ChromaDB 벡터 스토어](#3-chromadb-벡터-스토어)
 - [4. 데이터베이스 최적화](#4-데이터베이스-최적화)
 
----
-
 ## 1. 개요
 
 NewLearnNote는 **PostgreSQL**과 **ChromaDB** 두 가지 데이터베이스를 사용합니다.
@@ -40,8 +38,6 @@ DATABASE_URL = "postgresql://user:password@localhost:5432/newlearnnote"
 # ChromaDB
 CHROMA_DB_PATH = "./chroma"
 ```
-
----
 
 ## 2. PostgreSQL 스키마
 
@@ -286,11 +282,9 @@ WHERE deleted_at IS NULL;
 ```
 
 **장점:**
-- ✅ 데이터 복구 가능
-- ✅ 감사(Audit) 추적
-- ✅ 참조 무결성 유지
-
----
+- 데이터 복구 가능
+- 감사(Audit) 추적
+- 참조 무결성 유지
 
 ## 3. ChromaDB 벡터 스토어
 
@@ -392,8 +386,6 @@ chunks = text_splitter.split_text(text)
 - 문맥 연속성 유지
 - 검색 정확도 향상
 
----
-
 ## 4. 데이터베이스 최적화
 
 ### 4.1 인덱싱 전략
@@ -485,8 +477,6 @@ LIMIT 10;
 - `Index Scan`: 인덱스 사용 ✅
 - `Seq Scan`: 전체 테이블 스캔 ❌ (인덱스 필요)
 
----
-
 ## 5. 데이터 마이그레이션
 
 ### 5.1 Prisma 마이그레이션
@@ -516,8 +506,6 @@ alembic revision --autogenerate -m "Add document table"
 # 마이그레이션 적용
 alembic upgrade head
 ```
-
----
 
 ## 참고 자료
 

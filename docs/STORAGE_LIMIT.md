@@ -10,7 +10,7 @@
 - [5. 용량 추적](#5-용량-추적)
 - [6. 에러 처리](#6-에러-처리)
 
----
+
 
 ## 1. 개요
 
@@ -27,14 +27,14 @@ NewLearnNote는 플랜별로 차별화된 저장 용량을 제공하여:
 3. **명확한 에러 메시지**: 사용자에게 현재 상태 및 업그레이드 안내
 4. **성능**: JWT 인증 시 subscription 정보 포함하여 추가 DB 조회 불필요
 
----
+
 
 ## 2. 제한 정책
 
 ### 2.1 공통 제한 (모든 플랜)
 
 | 항목 | 제한 | 설명 |
-|------|------|------|
+|---|---|---|
 | **개별 파일 크기** | 10MB | 단일 파일 최대 크기 |
 | **배치 업로드 크기** | 50MB | 한 번에 업로드 가능한 총 파일 크기 |
 | **파일 형식** | PDF, MD, TXT | 지원 파일 형식 |
@@ -42,7 +42,7 @@ NewLearnNote는 플랜별로 차별화된 저장 용량을 제공하여:
 ### 2.2 플랜별 제한
 
 | 플랜 | 라이브러리 개수 | 총 용량 | 가격 |
-|------|----------------|---------|------|
+|---|---|---|---|
 | **FREE** | 1개 | 500MB | 무료 |
 | **BASIC** | 무제한 | 5GB | $9.99/월 |
 | **PREMIUM** | 무제한 | 10GB | $19.99/월 |
@@ -63,7 +63,7 @@ user-libraries/{userId}/{libraryId}/
 - `private/`: 사용자의 원본 문서 저장소 (용량 제한 적용)
 - `published/`: 공개된 노트 (별도 관리, 현재 용량 제한 없음)
 
----
+
 
 ## 3. 아키텍처
 
@@ -150,7 +150,7 @@ sequenceDiagram
     end
 ```
 
----
+
 
 ## 4. 구현 세부사항
 
@@ -182,7 +182,7 @@ async findUserBySub(sub: string): Promise<ResponseUserDto | null> {
 
 **효과**: `request.user.subscription`으로 바로 접근, 추가 DB 조회 불필요
 
----
+
 
 ### 4.2 LibraryPrivateService 검증 메서드
 
@@ -273,7 +273,7 @@ private async validateLibraryLimit(userId: string): Promise<void> {
 }
 ```
 
----
+
 
 ### 4.3 SubscriptionService 메서드
 
@@ -317,7 +317,7 @@ private parseStorageLimit(limit: string): number {
 }
 ```
 
----
+
 
 ## 5. 용량 추적
 
@@ -455,7 +455,7 @@ async setStorageUsed(libraryId: string, size: number): Promise<void> {
 }
 ```
 
----
+
 
 ## 6. 에러 처리
 
@@ -472,7 +472,7 @@ async setStorageUsed(libraryId: string, size: number): Promise<void> {
 ### 6.2 에러 시나리오
 
 | 시나리오 | HTTP 상태 | 메시지 |
-|----------|-----------|--------|
+|-----|-----|-----|
 | 개별 파일 크기 초과 | 400 | `Individual file size exceeds 10MB limit` |
 | 배치 크기 초과 | 400 | `Upload batch size exceeds 50MB limit` |
 | 총 용량 초과 | 400 | `Insufficient storage space` (플랜 정보 포함) |
@@ -486,7 +486,7 @@ async setStorageUsed(libraryId: string, size: number): Promise<void> {
 3. 현재 사용량 표시 (프로그레스 바)
 4. 파일 업로드 전 클라이언트 측 사전 검증
 
----
+
 
 ## 관련 문서
 
