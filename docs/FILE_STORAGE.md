@@ -9,8 +9,6 @@
 - [4. Signed URL 전략](#4-signed-url-전략)
 - [5. 라이브러리 파일 관리](#5-라이브러리-파일-관리)
 
----
-
 ## 1. 개요
 
 NewLearnNote는 모든 파일을 **Google Cloud Storage (GCS)**에 저장하며, 보안과 성능을 위해 **Signed URL** 전략을 사용합니다.
@@ -27,12 +25,9 @@ NewLearnNote는 모든 파일을 **Google Cloud Storage (GCS)**에 저장하며,
 
 ### 1.2 파일 저장 원칙
 
-- ✅ **로컬 저장 금지**: 모든 파일은 GCS에 직접 업로드
-- ✅ **UUID 기반 파일명**: 충돌 방지 및 예측 불가능성
-- ✅ **Public/Private 분리**: 공개 파일과 비공개 파일 분리
-- ✅ **Signed URL**: Private 파일 접근 시 시간 제한 URL 생성
-
----
+- **UUID 기반 파일명**: 충돌 방지 및 예측 불가능성
+- **Public/Private 분리**: 공개 파일과 비공개 파일 분리
+- **Signed URL**: Private 파일 접근 시 시간 제한 URL 생성
 
 ## 2. GCS 폴더 구조
 
@@ -79,8 +74,6 @@ USER_DEFAULT_AVATAR_URL=https://storage.googleapis.com/newlearnnote-bk-test/user
 USER_AVATAR_URLS=https://storage.googleapis.com/newlearnnote-bk-test/user-avatar/
 USER_DOCUMENTS_URL=https://storage.googleapis.com/newlearnnote-bk-test/user-documents/
 ```
-
----
 
 ## 3. 파일 업로드 플로우
 
@@ -187,8 +180,6 @@ export class StorageService {
 }
 ```
 
----
-
 ## 4. Signed URL 전략
 
 ### 4.1 Signed URL이란?
@@ -257,8 +248,6 @@ X-Goog-Expires=300&
 X-Goog-SignedHeaders=host&
 X-Goog-Signature=...
 ```
-
----
 
 ## 5. 라이브러리 파일 관리
 
@@ -353,8 +342,6 @@ async publishLibrary(@Param('id') libraryId: string) {
 }
 ```
 
----
-
 ## 6. 파일 트리 조회
 
 ### 6.1 파일 트리 API
@@ -432,8 +419,6 @@ private buildFileTree(files: any[], prefix: string): any {
 }
 ```
 
----
-
 ## 7. 파일 삭제
 
 ### 7.1 Soft Delete
@@ -469,8 +454,6 @@ async deleteFile(path: string): Promise<void> {
 }
 ```
 
----
-
 ## 8. 보안 고려사항
 
 ### 8.1 파일 업로드 검증
@@ -493,9 +476,9 @@ const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
 
 ### 8.2 Signed URL 보안
 
-- ✅ **짧은 유효 시간**: 5분 (필요 시 조정)
-- ✅ **서명 검증**: GCS가 자동 검증
-- ✅ **변조 불가**: URL 변경 시 서명 무효화
+- **짧은 유효 시간**: 5분
+- **서명 검증**: GCS가 자동 검증
+- **변조 불가**: URL 변경 시 서명 무효화
 
 ### 8.3 IAM 권한 관리
 
@@ -508,8 +491,6 @@ const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
   ]
 }
 ```
-
----
 
 ## 참고 자료
 

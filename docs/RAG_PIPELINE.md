@@ -9,7 +9,7 @@
 - [4. Generation Phase (답변 생성)](#4-generation-phase-답변-생성)
 - [5. 대화 히스토리 관리](#5-대화-히스토리-관리)
 
----
+
 
 ## 1. RAG 개요
 
@@ -52,7 +52,7 @@ graph TB
     style LLM fill:#FF6B6B,color:#fff
 ```
 
----
+
 
 ## 2. Indexing Phase (문서 처리)
 
@@ -192,7 +192,7 @@ vectorstore.add_documents([
 ])
 ```
 
----
+
 
 ## 3. Retrieval Phase (검색)
 
@@ -275,7 +275,7 @@ async def search_similar_chunks(
 ]
 ```
 
----
+
 
 ## 4. Generation Phase (답변 생성)
 
@@ -398,7 +398,7 @@ ChatOpenAI(
 - **0.7**: 약간의 변화 (균형)
 - **1.0**: 매번 다른 답변 (창의성)
 
----
+
 
 ## 5. 대화 히스토리 관리
 
@@ -478,7 +478,7 @@ if len(content) > 500:
 conversation_history = get_conversation_history(chat_id, limit=10)
 ```
 
----
+
 
 ## 6. 문서 삭제 (벡터스토어)
 
@@ -502,7 +502,7 @@ async def delete_document_from_vectorstore(document_id: str):
     print(f"✅ Document {document_id} deleted from vectorstore")
 ```
 
----
+
 
 ## 7. RAG 평가 지표 (향후 개선)
 
@@ -520,7 +520,7 @@ async def delete_document_from_vectorstore(document_id: str):
 - **Answer Relevance**: 질문과 답변 관련성
 - **Context Relevance**: 검색된 문서와 질문 관련성
 
----
+
 
 ## 참고 자료
 

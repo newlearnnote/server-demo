@@ -9,7 +9,7 @@
 - [4. API 보안](#4-api-보안)
 - [5. 파일 보안](#5-파일-보안)
 
----
+
 
 ## 1. 보안 개요
 
@@ -38,22 +38,22 @@ graph TB
 ### 1.2 보안 원칙
 
 | 원칙 | 구현 |
-|------|------|
+|---|---|
 | **최소 권한** | 사용자별 권한 검증 (Guard) |
 | **심층 방어** | 다층 보안 (OAuth → JWT → Guard) |
 | **암호화** | TLS 1.3 (통신), AES (저장) |
 | **감사 추적** | 로깅, Soft Delete |
 
----
+
 
 ## 2. 인증/인가 보안
 
 ### 2.1 OAuth 2.0 보안
 
 **Google OAuth 신뢰:**
-- ✅ Google이 신원 확인
-- ✅ 비밀번호 저장 불필요
-- ✅ 2FA (Two-Factor Authentication) 지원
+- Google이 신원 확인
+- 비밀번호 저장 불필요
+- 2FA (Two-Factor Authentication) 지원
 
 **Authorization Code Flow:**
 ```
@@ -88,10 +88,10 @@ const token = jwt.sign(payload, process.env.JWT_SECRET, {
 ```
 
 **보안 전략:**
-- ✅ **짧은 수명**: 15분 (탈취 시 피해 최소화)
-- ✅ **서버 측 검증**: JWT 서명 검증
-- ✅ **HTTPS Only**: 토큰 전송 시 암호화
-- ✅ **localStorage 금지**: XSS 공격 방지
+- **짧은 수명**: 15분 (탈취 시 피해 최소화)
+- **서버 측 검증**: JWT 서명 검증
+- **HTTPS Only**: 토큰 전송 시 암호화
+- **localStorage 금지**: XSS 공격 방지
 
 ### 2.3 Refresh Token 보안
 
@@ -116,7 +116,7 @@ if (token.revokedAt) {
 }
 ```
 
----
+
 
 ## 3. 데이터 보안
 
@@ -174,9 +174,9 @@ const isMatch = await bcrypt.compare(password, hashedPassword);
 ```
 
 **bcrypt 특징:**
-- ✅ Salt 자동 생성
-- ✅ 느린 알고리즘 (무차별 대입 방지)
-- ✅ Adaptive (saltRounds 조정 가능)
+- Salt 자동 생성
+- 느린 알고리즘 (무차별 대입 방지)
+- Adaptive (saltRounds 조정 가능)
 
 ### 3.3 Secrets 관리
 
@@ -200,7 +200,7 @@ Production:
 - Secret Manager (클라우드)
 ```
 
----
+
 
 ## 4. API 보안
 
@@ -236,8 +236,8 @@ export class RateLimitGuard implements CanActivate {
 ```
 
 **제한사항:**
-- ⚠️ 서버 재시작 시 데이터 손실
-- ⚠️ 다중 서버 환경 미지원
+- 서버 재시작 시 데이터 손실
+- 다중 서버 환경 미지원
 
 **향후 개선 (Redis):**
 ```typescript
@@ -348,7 +348,7 @@ const user = await prisma.$queryRaw`
 `;  // Prisma는 자동으로 파라미터화
 ```
 
----
+
 
 ## 5. 파일 보안
 
@@ -400,9 +400,9 @@ const [signedUrl] = await file.getSignedUrl({
 ```
 
 **보안 특징:**
-- ✅ **짧은 유효 시간**: 5분 (탈취 위험 감소)
-- ✅ **서명 검증**: GCS가 자동 검증
-- ✅ **변조 불가**: URL 변경 시 서명 무효화
+- **짧은 유효 시간**: 5분 (탈취 위험 감소)
+- **서명 검증**: GCS가 자동 검증
+- **변조 불가**: URL 변경 시 서명 무효화
 
 ### 5.3 LibraryOwnerGuard
 
@@ -431,7 +431,7 @@ export class LibraryOwnerGuard implements CanActivate {
 }
 ```
 
----
+
 
 ## 6. 보안 체크리스트
 
@@ -467,7 +467,7 @@ export class LibraryOwnerGuard implements CanActivate {
 - [x] Signed URL (시간 제한)
 - [x] LibraryOwnerGuard (권한 검증)
 
----
+
 
 ## 7. 보안 모니터링 (향후 구현)
 
@@ -497,7 +497,7 @@ logger.error('Unauthorized access attempt', {
 - Rate Limit 초과 10회 이상
 - 권한 없음 에러 증가
 
----
+
 
 ## 참고 자료
 
